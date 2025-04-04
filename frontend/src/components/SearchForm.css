@@ -1,0 +1,145 @@
+.search-form-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.search-form-container h1 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 2.5rem;
+}
+
+.subtitle {
+  margin-bottom: 2rem;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.search-form {
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  display: flex;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px 0 0 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #3498db;
+}
+
+.input-group input.error {
+  border-color: #e74c3c;
+}
+
+.input-group button {
+  padding: 0.8rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.input-group button:hover {
+  background-color: #2980b9;
+}
+
+.input-group button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.example-addresses {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.example-addresses p {
+  margin-bottom: 0.5rem;
+  color: #7f8c8d;
+}
+
+.example-addresses ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.example-addresses button {
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.example-addresses button:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+.example-addresses button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .search-form-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .search-form-container h1 {
+    font-size: 2rem;
+  }
+  
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group input {
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-group button {
+    border-radius: 8px;
+  }
+  
+  .example-addresses ul {
+    flex-direction: column;
+    align-items: center;
+  }
+} 

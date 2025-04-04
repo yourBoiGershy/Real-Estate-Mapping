@@ -1,0 +1,41 @@
+name,category,address,lat,lng,rating
+Rideau Centre,retail,50 Rideau St,45.4255,-75.6912,4.5
+Bayshore Shopping Centre,retail,100 Bayshore Dr,45.3493,-75.8092,4.3
+Tanger Outlets,retail,8555 Campeau Dr,45.3029,-75.9334,4.2
+Downtown Ottawa Shops,retail,240 Sparks St,45.4206,-75.7015,4.4
+St. Laurent Shopping Centre,retail,1200 St Laurent Blvd,45.4221,-75.6393,4.1
+Farm Boy,grocery,1427 Richmond Rd,45.3576,-75.7979,4.5
+Loblaws,grocery,64 Isabella St,45.4155,-75.6926,4.2
+Whole Foods,grocery,951 Bank St,45.4039,-75.6836,4.3
+La Bottega,grocery,64 George St,45.4262,-75.6933,4.6
+T&T Supermarket,grocery,224 Hunt Club Rd,45.3470,-75.6544,4.4
+Clocktower Brew Pub,restaurant,575 Bank St,45.4115,-75.6913,4.3
+Elgin Street Diner,restaurant,374 Elgin St,45.4166,-75.6894,4.2
+Zak's Diner,restaurant,14 Byward Market Sq,45.4278,-75.6934,4.1
+The Keg,restaurant,75 Metcalfe St,45.4200,-75.6978,4.4
+El Camino,restaurant,380 Elgin St,45.4166,-75.6894,4.3
+ByWard Market,entertainment,55 ByWard Market Square,45.4285,-75.6938,4.5
+Canadian Museum of Nature,entertainment,240 McLeod St,45.4126,-75.6876,4.7
+National Gallery of Canada,entertainment,380 Sussex Dr,45.4292,-75.6987,4.6
+Parliament Hill,entertainment,Wellington St,45.4236,-75.7009,4.8
+Canadian Museum of History,entertainment,100 Laurier St,45.4299,-75.7091,4.6
+Mayor's Park,park,110 Laurier Ave W,45.4202,-75.6981,4.0
+Vincent Massey Park,park,1 Heron Rd,45.3797,-75.6866,4.3
+Brewer Park,park,100 Brewer Way,45.3871,-75.6892,4.2
+Mooney's Bay,park,2926 Riverside Dr,45.3664,-75.6926,4.5
+Carlington Park,park,941 Clyde Ave,45.3800,-75.7325,4.1
+University of Ottawa,school,75 Laurier Ave E,45.4231,-75.6831,4.4
+Carleton University,school,1125 Colonel By Dr,45.3825,-75.6965,4.3
+Algonquin College,school,1385 Woodroffe Ave,45.3473,-75.7546,4.2
+Lisgar Collegiate Institute,school,29 Lisgar St,45.4212,-75.6911,4.1
+Glebe Collegiate Institute,school,212 Glebe Ave,45.4016,-75.6907,4.0
+BATL Axe Throwing,entertainment,2615 Lancaster Road,45.3953,-75.6043,4.3
+ByTowne Cinema,entertainment,325 Rideau Street,45.4309,-75.6823,4.6
+Brass Monkey Pool Hall,entertainment,250 Greenbank Road,45.3353,-75.8037,4.1
+Bar Billard le Huit,entertainment,174 Boulevard Gréber,45.4776,-75.7108,4.0
+Bar-Billard Terminus,entertainment,84C Rue Jean-Proulx,45.4462,-75.7475,3.9
+Brew Donkey Beer Tours,entertainment,987 Wellington Street West,45.4053,-75.7301,4.7
+Blackbird Falls Putting Course,entertainment,320 Terry Fox Drive,45.3065,-75.9112,4.2
+Britannia Beach,entertainment,2805 Carling Avenue,45.3617,-75.8108,4.4
+Bytown Museum,entertainment,1 Canal Lane,45.4243,-75.6983,4.5
+Bearbrook Golf Course,entertainment,4725 Whispering Willow Drive,45.4033,-75.4488,4.1 

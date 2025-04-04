@@ -1,0 +1,100 @@
+name,category,address,lat,lng,rating
+# Major Parks
+Andrew Haydon Park,park,3169 Carling Ave,45.3562,-75.8078,4.6
+Brewer Park,park,100 Brewer Way,45.3871,-75.6892,4.3
+Britannia Park,park,2805 Carling Ave,45.3617,-75.8097,4.5
+Confederation Park,park,Elgin St & Laurier Ave,45.4222,-75.6892,4.7
+Dow's Lake,park,1001 Queen Elizabeth Dr,45.3973,-75.7031,4.6
+Hog's Back Park,park,600 Hog's Back Rd,45.3728,-75.6986,4.4
+Lansdowne Park,park,1015 Bank St,45.3996,-75.6826,4.5
+Macdonald Gardens,park,Cobourg St & Heney St,45.4345,-75.6794,4.2
+Major's Hill Park,park,Wellington St & Mackenzie Ave,45.4270,-75.6972,4.7
+Mooney's Bay Park,park,2926 Riverside Dr,45.3664,-75.6926,4.6
+Nepean Creek Park,park,55 Colonnade Rd,45.3355,-75.7617,4.1
+Rockcliffe Park,park,Acacia Ave & Lansdowne Rd,45.4531,-75.6751,4.8
+Strathcona Park,park,25 Range Rd,45.4258,-75.6732,4.5
+Vincent Massey Park,park,1 Heron Rd,45.3797,-75.6866,4.4
+Wesley Clover Parks,park,401 Corkstown Rd,45.3438,-75.8653,4.3
+
+# Downtown Area Parks
+Commissioner's Park,park,Queen Elizabeth Dr,45.3991,-75.7009,4.7
+Garden of the Provinces and Territories,park,Wellington St & Bay St,45.4192,-75.7065,4.3
+Dundonald Park,park,516 Somerset St W,45.4148,-75.6979,4.1
+Minto Park,park,Elgin St & Gilmour St,45.4171,-75.6897,4.2
+Jack Purcell Park,park,320 Jack Purcell Lane,45.4162,-75.6880,4.0
+
+# The Glebe Parks
+Brown's Inlet Park,park,Brown's Inlet,45.4025,-75.6867,4.3
+Central Park,park,Bank St & Patterson Ave,45.3962,-75.6828,4.4
+Patterson Creek Park,park,Patterson Ave,45.4019,-75.6854,4.5
+
+# Alta Vista Parks
+Alta Vista Park,park,1817 Randall Ave,45.3786,-75.6552,4.2
+Billings Estate Museum,park,2100 Cabot St,45.3897,-75.6699,4.5
+Canterbury Park,park,2185 Arch St,45.3866,-75.6368,4.3
+Kilborn Park,park,1600 Kilborn Ave,45.3854,-75.6432,4.1
+Pleasant Park Woods,park,Pleasant Park Rd,45.3789,-75.6508,4.4
+
+# Orleans Parks
+Millennium Park,park,Orleans Blvd & Trim Rd,45.4766,-75.5172,4.3
+Petrie Island,park,795 Trim Rd,45.5089,-75.4995,4.7
+Champagne Park,park,Jeanne d'Arc Blvd,45.4674,-75.5452,4.1
+Princess Louise Park,park,1211 Lacroix Ave,45.4735,-75.5392,4.0
+
+# Kanata Parks
+Walter Baker Park,park,100 Charlie Rogers Pl,45.3095,-75.8832,4.4
+Bridlewood Park,park,63 Bluegrass Dr,45.2864,-75.8815,4.2
+Kanata Lakes Park,park,955 Klondike Rd,45.3463,-75.9293,4.3
+South March Highlands,park,Second Line Rd,45.3527,-75.9185,4.6
+
+# Barrhaven Parks
+Clarke Fields Park,park,93 Houlahan St,45.2726,-75.7380,4.3
+Greenbank Park,park,3095 Greenbank Rd,45.2682,-75.7569,4.1
+Strandherd Park,park,3320 Woodroffe Ave,45.2626,-75.7489,4.0
+Minto Recreation Park,park,3500 Cambrian Rd,45.2780,-75.7354,4.2
+
+# Riverside South Parks
+Claudette Cain Park,park,1 River Rd,45.3151,-75.6972,4.3
+River Run Park,park,Shoreline Dr,45.3085,-75.6978,4.1
+Mooneys Bay,park,2926 Riverside Dr,45.3664,-75.6926,4.7
+Hog's Back Falls,park,600 Hog's Back Rd,45.3728,-75.6986,4.6
+
+# Nepean Parks
+Centrepointe Park,park,101 Centrepointe Dr,45.3459,-75.7612,4.4
+Algonquin College Woodroffe Campus Grounds,park,1385 Woodroffe Ave,45.3473,-75.7547,4.2
+Baseline Woods,park,Navaho Dr,45.3487,-75.7650,4.0
+Bruce Pit,park,175 Cedarview Rd,45.3098,-75.8188,4.7
+
+# Sandy Hill Parks
+Sandy Hill Park,park,250 Somerset St E,45.4220,-75.6767,4.1
+Strathcona Park,park,25 Range Rd,45.4258,-75.6732,4.5
+Dutchy's Hole Park,park,160 Mann Ave,45.4205,-75.6714,4.0
+
+# Westboro Parks
+Westboro Beach,park,745 Sir John A. Macdonald Pkwy,45.3927,-75.7592,4.5
+Hampton Park,park,1200 Dovercourt Ave,45.3876,-75.7400,4.2
+Byron Linear Park,park,Richmond Rd,45.3846,-75.7558,4.3
+
+# Hintonburg Parks
+Hintonburg Park,park,Wellington St W & Fairmont Ave,45.4049,-75.7242,4.1
+Laroche Park,park,52 Bayview Rd,45.4079,-75.7226,4.0
+Tom Brown Arena Park,park,141 Bayview Rd,45.4060,-75.7233,4.2
+
+# Vanier Parks
+Richelieu Park,park,300 Des Pères Blancs Ave,45.4484,-75.6588,4.3
+Optimiste Park,park,43 Ste Cecile St,45.4399,-75.6622,4.0
+Riverain Park,park,400 North River Rd,45.4386,-75.6624,4.2
+
+# Old Ottawa South Parks
+Windsor Park,park,1 Windsor Ave,45.3982,-75.6809,4.4
+Linda Thom Park,park,52 Cameron Ave,45.3930,-75.6797,4.0
+Brewer Park,park,100 Brewer Way,45.3871,-75.6892,4.3
+
+# Other Notable Parks
+Arboretum,park,Prince of Wales Dr,45.3916,-75.7044,4.8
+Experimental Farm,park,960 Carling Ave,45.3867,-75.7145,4.6
+Remic Rapids Park,park,Sir John A. Macdonald Pkwy,45.4010,-75.7451,4.4
+Rideau Falls Park,park,50 Sussex Dr,45.4406,-75.6958,4.5
+Bate Island,park,Ottawa River Pkwy,45.4108,-75.7587,4.1
+Lemieux Island,park,1 Booth St,45.4113,-75.7370,4.2
+Parc Omega,park,399 Route 323 North,45.6814,-74.9420,4.7 

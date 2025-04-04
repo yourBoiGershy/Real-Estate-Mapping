@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f7fa;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 10px;
+  }
+}
+
+.App {
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.App-header h1 {
+  margin: 0;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.search-input input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+}
+
+.search-input button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-input button:hover {
+  background-color: #45a049;
+}
+
+.results-container {
+  margin-top: 20px;
+}
+
+.results-card {
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.score-section {
+  margin-bottom: 15px;
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.score-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.score-value {
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: white;
+}
+
+.score-details {
+  margin-top: 10px;
+}
+
+.score-details ul {
+  padding-left: 20px;
+}
+
+.score-good {
+  background-color: #4CAF50;
+}
+
+.score-medium {
+  background-color: #ff9800;
+}
+
+.score-poor {
+  background-color: #f44336;
+}
+
+.map-container {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.error-message {
+  color: #f44336;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin-bottom: 10px;
+} 

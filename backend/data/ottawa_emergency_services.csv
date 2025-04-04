@@ -1,0 +1,56 @@
+name,type,address,lat,lng,rating
+# Hospitals
+The Ottawa Hospital - General Campus,hospital,501 Smyth Rd,45.4008,-75.6468,4.5
+The Ottawa Hospital - Civic Campus,hospital,1053 Carling Ave,45.3981,-75.7227,4.6
+The Ottawa Hospital - Riverside Campus,hospital,1967 Riverside Drive,45.3842,-75.6693,4.4
+Children's Hospital of Eastern Ontario (CHEO),hospital,401 Smyth Rd,45.4017,-75.6457,4.7
+Queensway-Carleton Hospital,hospital,3045 Baseline Rd,45.3458,-75.8043,4.4
+Montfort Hospital,hospital,713 Montreal Rd,45.4384,-75.6373,4.3
+
+# Fire Stations (from Ottawa Fire Services)
+Fire Station 11 (Little Italy),fire,135 Preston St,45.4045,-75.7083,4.2
+Fire Station 12 (The Glebe),fire,635 O'Connor St,45.4098,-75.6855,4.1
+Fire Station 13 (Sandy Hill),fire,530 King Edward Ave,45.4249,-75.6815,4.0
+Fire Station 21,fire,900 Industrial Ave,45.4139,-75.6333,4.1
+Fire Station 22,fire,1397 March Rd,45.3512,-75.9400,4.0
+Fire Station 23 (Headquarters),fire,1443 Carling Ave,45.3865,-75.7455,4.1
+Fire Station 24,fire,6213 Perth St,45.2573,-75.7294,4.0
+Fire Station 25,fire,1055 Richmond Rd,45.3671,-75.7781,4.2
+Fire Station 31,fire,3255 Conroy Rd,45.3671,-75.6363,4.0
+Fire Station 32,fire,3200 Woodroffe Ave,45.2742,-75.7565,4.1
+Fire Station 33,fire,530 King Edward Avenue,45.4255,-75.6834,4.0
+Fire Station 34,fire,700 Brookfield Road,45.3728,-75.6899,4.0
+Fire Station 35,fire,2355 Altavista Drive,45.3835,-75.6618,4.0
+Fire Station 36,fire,1935 Cyrville Road,45.4233,-75.6252,4.0
+Fire Station 37,fire,910 Earl Armstrong Road,45.2800,-75.6984,4.0
+Fire Station 41,fire,380 Eagleson Road,45.3050,-75.8352,4.0
+Fire Station 42,fire,1021 Teron Road,45.3348,-75.9349,4.0
+Fire Station 43,fire,3845 Old Richmond Road,45.3368,-75.8424,4.0
+Fire Station 44,fire,1075 Greenbank Road,45.2830,-75.7672,4.0
+Fire Station 45,fire,1075 March Road,45.3522,-75.9310,4.0
+Fire Station 46,fire,34 Iber Road,45.3003,-75.8988,4.0
+Fire Station 47,fire,3559 Greenbank Road,45.2628,-75.7662,4.0
+Fire Station 51,fire,900 Montreal Road,45.4461,-75.6296,4.0
+Fire Station 52,fire,6213 Jeanne D'Arc Boulevard,45.4750,-75.5498,4.0
+Fire Station 53,fire,500 Charlemange Boulevard,45.4611,-75.5242,4.0
+Fire Station 54,fire,3080 Innes Road,45.4213,-75.5634,4.0
+Fire Station 55,fire,2283 Portobello Boulevard,45.4760,-75.5109,4.0
+Fire Station 56,fire,275 Coventry Road,45.4430,-75.6704,4.0
+Fire Station 57,fire,220 Beechwood Avenue,45.4430,-75.6704,4.0
+Fire Station 61,fire,3150 Kinburn Side Road,45.3853,-76.1842,4.0
+Fire Station 62,fire,6900 Harbour Street,45.4708,-76.2088,4.0
+Fire Station 63,fire,341 Bayview Drive,45.4736,-76.0943,4.0
+Fire Station 64,fire,475 Donald B. Munro Drive,45.3576,-76.0416,4.0
+Fire Station 66,fire,3285 Dunrobin Road,45.4201,-76.0084,4.0
+Fire Station 71,fire,1246 Colonial Road,45.4233,-75.5126,4.0
+Fire Station 72,fire,2445 Old Montreal Road,45.5019,-75.4289,4.0
+Fire Station 73,fire,6090 Rockdale Road,45.3698,-75.3526,4.0
+
+# Police Stations
+Ottawa Police Service - Headquarters,police,474 Elgin St,45.4123,-75.6907,4.0
+Ottawa Police Service - East Division,police,3343 St Joseph Blvd,45.4682,-75.5015,4.1
+Ottawa Police Service - West Division,police,211 Huntmar Dr,45.2961,-75.9151,4.1
+Ottawa Police Service - South Division,police,4561 Bank St,45.3156,-75.6121,4.0
+Ottawa Police Service - Central Division,police,109 ByWard Market Square,45.4292,-75.6929,4.2
+OPP Ottawa Detachment,police,3312 Fallowfield Road,45.3498,-75.6054,4.0
+RCMP National Division,police,155 McArthur Road,45.4330,-75.6939,4.0 

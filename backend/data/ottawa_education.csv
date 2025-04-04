@@ -1,0 +1,75 @@
+name,category,address,lat,lng,rating
+# Universities and Colleges
+University of Ottawa,school,75 Laurier Ave E,45.4231,-75.6831,4.7
+Carleton University,school,1125 Colonel By Dr,45.3825,-75.6965,4.6
+Algonquin College,school,1385 Woodroffe Ave,45.3473,-75.7546,4.5
+La Cité collégiale,school,801 Aviation Pkwy,45.4421,-75.6499,4.4
+Saint Paul University,school,223 Main St,45.4082,-75.6776,4.3
+Dominican University College,school,96 Empress Ave,45.4171,-75.6988,4.2
+
+# Public High Schools - English
+Lisgar Collegiate Institute,school,29 Lisgar St,45.4212,-75.6911,4.6
+Glebe Collegiate Institute,school,212 Glebe Ave,45.4016,-75.6907,4.5
+Colonel By Secondary School,school,2381 Ogilvie Rd,45.4348,-75.5878,4.6
+Bell High School,school,40 Cassidy Rd,45.3462,-75.8336,4.3
+Brookfield High School,school,824 Brookfield Rd,45.3642,-75.7116,4.2
+Canterbury High School,school,900 Canterbury Ave,45.3897,-75.6662,4.7
+Earl of March Secondary School,school,4 The Parkway,45.3519,-75.9186,4.4
+Gloucester High School,school,2060 Ogilvie Rd,45.4318,-75.6055,4.1
+Hillcrest High School,school,1900 Dauphin Rd,45.3916,-75.6686,4.0
+John McCrae Secondary School,school,103 Malvern Dr,45.2976,-75.7400,4.2
+Merivale High School,school,1755 Merivale Rd,45.3446,-75.7373,4.0
+Nepean High School,school,574 Broadview Ave,45.3941,-75.7532,4.5
+Ridgemont High School,school,2597 Alta Vista Dr,45.3826,-75.6613,4.0
+Sir Robert Borden High School,school,131 Greenbank Rd,45.3467,-75.7998,4.2
+Sir Wilfrid Laurier Secondary School,school,1515 Tenth Line Rd,45.4692,-75.5073,4.3
+South Carleton High School,school,3673 McBean St,45.2555,-75.9164,4.2
+Woodroffe High School,school,2410 Georgina Dr,45.3724,-75.7793,4.1
+
+# Catholic High Schools - English
+All Saints High School,school,5115 Kanata Ave,45.3394,-75.9179,4.4
+Holy Trinity Catholic High School,school,180 Katimavik Rd,45.3097,-75.8978,4.3
+Immaculata High School,school,140 Main St,45.4076,-75.6779,4.5
+Lester B. Pearson Catholic High School,school,2072 Jasmine Cres,45.4217,-75.6076,4.2
+Mother Teresa High School,school,440 Longfields Dr,45.2626,-75.7531,4.3
+Notre Dame High School,school,710 Broadview Ave,45.3966,-75.7577,4.0
+St. Francis Xavier High School,school,3740 Spratt Rd,45.2758,-75.6790,4.3
+St. Joseph High School,school,275 Weybridge Dr,45.2845,-75.5760,4.1
+St. Mark High School,school,1040 Coral Ave,45.2900,-75.8844,4.2
+St. Matthew High School,school,6550 Bilberry Dr,45.4737,-75.5169,4.3
+St. Patrick's High School,school,2525 Alta Vista Dr,45.3844,-75.6588,4.2
+St. Peter High School,school,750 Charlemagne Blvd,45.4599,-75.5486,4.3
+St. Pius X High School,school,1481 Fisher Ave,45.3626,-75.7347,4.5
+
+# French High Schools - Public
+École secondaire publique De La Salle,school,501 Old St Patrick St,45.4359,-75.6742,4.4
+École secondaire publique Gisèle-Lalonde,school,500 Millennium Blvd,45.4691,-75.5412,4.3
+École secondaire publique Louis-Riel,school,1655 Bearbrook Rd,45.4259,-75.5778,4.2
+École secondaire publique Omer-Deslauriers,school,159 Nanaimo Dr,45.3404,-75.8027,4.1
+
+# French High Schools - Catholic
+Collège catholique Franco-Ouest,school,411 Seyton Dr,45.3354,-75.8100,4.2
+Collège catholique Samuel-Genest,school,704 Carson Rd,45.4276,-75.6293,4.3
+Collège catholique Mer Bleue,school,6401 Renaud Rd,45.4428,-75.5088,4.4
+École secondaire catholique Franco-Cité,school,623 Smyth Rd,45.4024,-75.6482,4.2
+École secondaire catholique Garneau,school,6588 Carrière St,45.4777,-75.5145,4.3
+École secondaire catholique Pierre-Savard,school,1655 Longfields Dr,45.2652,-75.7577,4.2
+
+# Private Schools
+Ashbury College,school,362 Mariposa Ave,45.4492,-75.6840,4.8
+Elmwood School,school,261 Buena Vista Rd,45.4504,-75.6792,4.7
+Turnbull School,school,1132 Fisher Ave,45.3745,-75.7287,4.6
+Lycée Claudel d'Ottawa,school,1635 Riverside Dr,45.4075,-75.6740,4.7
+Joan of Arc Academy,school,2221 Elmira Dr,45.3586,-75.7634,4.5
+Bishop Hamilton Montessori School,school,2199 Regency Terrace,45.3552,-75.7656,4.6
+Ottawa Christian School,school,255 Tartan Dr,45.3095,-75.8360,4.5
+Ottawa Jewish Community School,school,31 Nadolny Sachs Private,45.3465,-75.7806,4.5
+OMS Montessori,school,335 Lindsay St,45.3967,-75.7619,4.6
+Blyth Academy Ottawa,school,1877 Baseline Rd,45.3455,-75.7598,4.4
+The Element High School,school,425 Marché Way,45.3465,-75.7791,4.5
+Westboro Academy,school,391 Richmond Rd,45.3894,-75.7578,4.5
+Académie de la Capitale,school,1010 Morrison Dr,45.3714,-75.7696,4.4
+Revel Academy,school,2303 Arch St,45.3602,-75.7644,4.3
+Kanata Academy,school,180 Huntmar Dr,45.3020,-75.9093,4.2
+Kanata Montessori School,school,196 Woburn St,45.3362,-75.9068,4.5
+Heritage Academy,school,1199 St. Laurent Blvd,45.4231,-75.6420,4.3 
