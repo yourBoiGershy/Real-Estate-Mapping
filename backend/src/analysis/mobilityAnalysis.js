@@ -1,5 +1,6 @@
 import { calculateHaversineDistance } from './customGeoAnalysis.js';
 import { getMainRoads } from '../data/dataLoader.js';
+import { calculateWalkingTime } from './routingAnalysis.js';
 
 // Constants for transit stations in Ottawa
 const TRANSIT_STATIONS = [
@@ -141,7 +142,7 @@ function calculateDistanceToLineSegment(x, y, x1, y1, x2, y2) {
  */
 function calculateDistanceToNearestMainRoad(lat, lng) {
   const mainRoads = getMainRoads();
-  
+
   if (!mainRoads || mainRoads.length === 0) {
     console.warn('No main roads data available');
     return {
@@ -151,14 +152,14 @@ function calculateDistanceToNearestMainRoad(lat, lng) {
   }
 
   console.log(`Evaluating distance to ${mainRoads.length} main roads`);
-  
+
   let closestDistance = Infinity;
   let closestRoad = null;
 
   for (const road of mainRoads) {
     try {
       let distance;
-      
+
       // Check if road has start and end coordinates (line segment)
       if (road.start_lat && road.start_lng && road.end_lat && road.end_lng) {
         // Calculate distance to road segment
@@ -167,7 +168,7 @@ function calculateDistanceToNearestMainRoad(lat, lng) {
           parseFloat(road.start_lng), parseFloat(road.start_lat),
           parseFloat(road.end_lng), parseFloat(road.end_lat)
         );
-      } 
+      }
       // Check if road has single point coordinates
       else if (road.lat && road.lng) {
         // Calculate direct distance to the road point
@@ -179,7 +180,7 @@ function calculateDistanceToNearestMainRoad(lat, lng) {
         console.warn(`Road ${road.name} has invalid coordinates`);
         continue;
       }
-      
+
       if (distance < closestDistance) {
         closestDistance = distance;
         closestRoad = road;
@@ -198,7 +199,7 @@ function calculateDistanceToNearestMainRoad(lat, lng) {
   }
 
   console.log(`Closest road is ${closestRoad.name} at ${closestDistance.toFixed(2)}m`);
-  
+
   return {
     distance: closestDistance,
     road: closestRoad
@@ -213,58 +214,81 @@ function calculateDistanceToNearestMainRoad(lat, lng) {
  */
 export function calculateMobilityScore(location) {
   // Get distances to transit infrastructure
-  const { distance: transitStationDistance, station: nearestStation } = 
+  const { distance: transitStationDistance, station: nearestStation } =
     calculateDistanceToNearestTransitStation(location.lat, location.lng);
-  
-  const { distance: busStopDistance, busStop: nearestBusStop } = 
+
+  const { distance: busStopDistance, busStop: nearestBusStop } =
     calculateDistanceToNearestBusStop(location.lat, location.lng);
-  
-  const { distance: roadDistance, road: nearestRoad } = 
+
+  const { distance: roadDistance, road: nearestRoad } =
     calculateDistanceToNearestMainRoad(location.lat, location.lng);
 
   // Calculate individual scores
-  
+
   // Transit station score (max score of 100 if within 300m, min score of 20 if beyond 2000m)
   const transitStationScore = transitStationDistance <= 300 ? 100 :
-                             transitStationDistance >= 2000 ? 20 : 
+                             transitStationDistance >= 2000 ? 20 :
                              Math.round(100 - ((transitStationDistance - 300) / 1700) * 80);
-  
+
   // Bus stop score (max score of 100 if within 150m, min score of 20 if beyond 1000m)
   const busStopScore = busStopDistance <= 150 ? 100 :
-                      busStopDistance >= 1000 ? 20 : 
+                      busStopDistance >= 1000 ? 20 :
                       Math.round(100 - ((busStopDistance - 150) / 850) * 80);
-  
+
   // Road access score (max score of 100 if within 200m, min score of 20 if beyond 1500m)
   const roadAccessScore = roadDistance <= 200 ? 100 :
-                         roadDistance >= 1500 ? 20 : 
+                         roadDistance >= 1500 ? 20 :
                          Math.round(100 - ((roadDistance - 200) / 1300) * 80);
-  
+
   // Calculate overall mobility score (weighted average)
   // Transit stations have highest weight, followed by bus stops and road access
   const overallMobilityScore = Math.round(
-    (transitStationScore * 0.45) + 
-    (busStopScore * 0.35) + 
+    (transitStationScore * 0.45) +
+    (busStopScore * 0.35) +
     (roadAccessScore * 0.2)
   );
+
+  // Calculate walking times using the new routing algorithm, but only for nearby locations
+  // For transit stations, only calculate if within 3km
+  const walkingTimeToStation = nearestStation && transitStationDistance <= 3000 ? calculateWalkingTime(
+    { lat: location.lat, lng: location.lng },
+    { lat: parseFloat(nearestStation.lat), lng: parseFloat(nearestStation.lng) }
+  ) : null;
+
+  // For bus stops, only calculate if within 2km
+  const walkingTimeToBusStop = nearestBusStop && busStopDistance <= 2000 ? calculateWalkingTime(
+    { lat: location.lat, lng: location.lng },
+    { lat: parseFloat(nearestBusStop.lat), lng: parseFloat(nearestBusStop.lng) }
+  ) : null;
+
+  // For roads, we need to find the nearest point on the road
+  // This is a simplified approach - in a real implementation, we would use the actual road network
+  const walkingTimeToRoad = nearestRoad ? {
+    minutes: Math.round(roadDistance / 83.3), // Assuming 5km/h walking speed (83.3m per minute)
+    isEstimate: true
+  } : null;
 
   // Prepare the transit station result format
   const nearestTransitStation = nearestStation ? {
     name: nearestStation.name,
     id: nearestStation.id,
-    distance: transitStationDistance
+    distance: transitStationDistance,
+    walkingTime: walkingTimeToStation
   } : null;
 
   // Prepare the bus stop result format
   const nearestBusStopResult = nearestBusStop ? {
     id: nearestBusStop.id,
     distance: busStopDistance,
-    routes: nearestBusStop.routes
+    routes: nearestBusStop.routes,
+    walkingTime: walkingTimeToBusStop
   } : null;
 
   // Prepare the road result format
   const nearestMainRoad = nearestRoad ? {
     name: nearestRoad.name,
-    distance: roadDistance
+    distance: roadDistance,
+    walkingTime: walkingTimeToRoad
   } : null;
 
   return {
@@ -278,6 +302,23 @@ export function calculateMobilityScore(location) {
   };
 }
 
+/**
+ * Initialize the road network graph
+ * This should be called when the application starts
+ */
+export async function initializeMobilityAnalysis() {
+  console.log('Initializing mobility analysis and road network graph...');
+  try {
+    // Import and initialize the road graph
+    const routingModule = await import('./routingAnalysis.js');
+    await routingModule.initializeRoadGraph();
+    console.log('Mobility analysis initialization complete');
+  } catch (err) {
+    console.error('Error initializing road graph:', err);
+  }
+}
+
 export default {
-  calculateMobilityScore
-}; 
+  calculateMobilityScore,
+  initializeMobilityAnalysis
+};

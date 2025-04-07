@@ -20,6 +20,27 @@ export interface Place {
   distance: number;
   rating: number;
   type?: string;
+  walkingTime?: WalkingTime;
+  drivingTime?: DrivingTime;
+  responseTime?: ResponseTime;
+}
+
+export interface WalkingTime {
+  minutes: number;
+  isEstimate: boolean;
+  method?: string;
+}
+
+export interface DrivingTime {
+  minutes: number;
+  isEstimate: boolean;
+  method?: string;
+  trafficLevel?: string;
+}
+
+export interface ResponseTime {
+  minutes: number;
+  serviceType: string;
 }
 
 export interface MobilityScore {
@@ -31,15 +52,21 @@ export interface MobilityScore {
     name: string;
     distance: number;
     id: string;
+    walkingTime?: WalkingTime;
+    drivingTime?: DrivingTime;
   } | null;
   nearestBusStop: {
     id: string;
     distance: number;
     routes: string[];
+    walkingTime?: WalkingTime;
+    drivingTime?: DrivingTime;
   } | null;
   nearestMainRoad: {
     name: string;
     distance: number;
+    walkingTime?: WalkingTime;
+    drivingTime?: DrivingTime;
   } | null;
 }
 
@@ -91,4 +118,4 @@ export interface RestaurantScore {
   restaurants: Place[];
   nearestRestaurant: Place | null;
   restaurantsWithin2km: number;
-} 
+}

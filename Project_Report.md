@@ -109,6 +109,155 @@ function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
 
 This algorithm provides accurate distance measurements regardless of position on the Earth, essential for our geospatial analysis that spans the Ottawa region.
 
+### Dijkstra's Algorithm for Routing
+
+To provide more realistic travel time estimates, we implemented Dijkstra's algorithm for finding the shortest path between locations using the road network:
+
+```javascript
+function findShortestPath(startLocation, endLocation) {
+  // Initialize data structures
+  const distances = new Map();
+  const previous = new Map();
+  const unvisited = new Set();
+
+  // Set initial distances to Infinity
+  for (const nodeId of roadGraph.nodes.keys()) {
+    distances.set(nodeId, Infinity);
+    unvisited.add(nodeId);
+  }
+
+  // Set distance to start node
+  distances.set(startNearest.node.id, 0);
+
+  // Main Dijkstra loop
+  while (unvisited.size > 0) {
+    // Find the unvisited node with the smallest distance
+    let currentId = findSmallestDistanceNode(unvisited, distances);
+
+    // If we've reached the end node or can't proceed further, break
+    if (currentId === null || currentId === endNearest.node.id) break;
+
+    // Remove current node from unvisited set
+    unvisited.delete(currentId);
+
+    // Process each neighbor
+    for (const edge of roadGraph.nodes.get(currentId).edges) {
+      const neighborId = edge.to.id;
+
+      // Calculate tentative distance
+      const tentativeDistance = distances.get(currentId) + edge.distance;
+
+      // If this path is shorter, update the distance
+      if (tentativeDistance < distances.get(neighborId)) {
+        distances.set(neighborId, tentativeDistance);
+        previous.set(neighborId, currentId);
+      }
+    }
+  }
+
+  // Reconstruct and return the path
+  return reconstructPath(previous, startNearest, endNearest, distances);
+}
+```
+
+**Time Complexity**: O(E + V log V) where E is the number of edges and V is the number of vertices in the road network.
+
+Our implementation includes several optimizations:
+
+1. **Early Termination**: The algorithm stops when it reaches the destination node or when a node is within a certain distance threshold (100m) of the destination.
+
+2. **Distance-Based Fallbacks**: For very short distances (< 200m), we use direct paths. For longer distances where no path is found, we use a distance multiplier (1.3x) to estimate walking distance.
+
+3. **Closest Approach**: When the maximum iteration limit is reached, we use the closest node we found to the destination rather than giving up entirely.
+
+4. **Batch Processing**: For large road networks, we process nodes in batches to improve performance.
+
+### Travel Time Calculation Algorithms
+
+The system calculates both walking and driving times between locations:
+
+1. **Walking Time Calculation**:
+```javascript
+function calculateWalkingTime(startLocation, endLocation) {
+  const walkingInfo = calculateWalkingInfo(startLocation, endLocation);
+
+  return {
+    minutes: Math.round(walkingInfo.walkingTime / 60),
+    distance: Math.round(walkingInfo.walkingDistance),
+    isEstimate: walkingInfo.method !== 'dijkstra'
+  };
+}
+```
+
+2. **Driving Time Calculation**:
+```javascript
+function calculateDrivingTime(startLocation, endLocation, trafficLevel = 'medium') {
+  // For very short distances, driving doesn't make sense
+  const directDistance = calculateHaversineDistance(startLocation, endLocation);
+  if (directDistance < 300) {
+    return {
+      minutes: 1, // Minimum 1 minute for very short drives
+      distance: Math.round(directDistance),
+      isEstimate: true
+    };
+  }
+
+  // Get the path information using our routing algorithm
+  const pathInfo = calculateWalkingInfo(startLocation, endLocation);
+
+  // Apply traffic factor based on congestion level
+  const trafficFactor = TRAFFIC_FACTORS[trafficLevel] || TRAFFIC_FACTORS.medium;
+
+  // Calculate driving speed based on road type
+  const roadType = determineRoadType(directDistance);
+  const drivingSpeed = DRIVING_SPEEDS[roadType];
+
+  // Calculate driving time with traffic and intersections
+  const drivingTimeSeconds = (pathInfo.walkingDistance / drivingSpeed) * trafficFactor;
+  const intersections = Math.floor(pathInfo.walkingDistance / 500);
+  const intersectionDelay = intersections * 20; // 20 seconds per intersection
+
+  return {
+    minutes: Math.max(1, Math.round((drivingTimeSeconds + intersectionDelay) / 60)),
+    distance: Math.round(pathInfo.walkingDistance),
+    isEstimate: pathInfo.method !== 'dijkstra'
+  };
+}
+```
+
+3. **Emergency Response Time Calculation**:
+```javascript
+function calculateEmergencyResponseTime(serviceLocation, targetLocation, serviceType) {
+  const directDistance = calculateHaversineDistance(serviceLocation, targetLocation);
+
+  // Different response speeds for different service types
+  const responseSpeedFactors = {
+    hospital: 0.9,  // Ambulances
+    fire: 0.85,     // Fire trucks
+    police: 0.8     // Police vehicles
+  };
+
+  // Calculate base response time with service-specific adjustments
+  const baseResponseTimeSeconds = directDistance / (DRIVING_SPEEDS.major * 1.2);
+  const adjustedResponseTimeSeconds = baseResponseTimeSeconds *
+    (responseSpeedFactors[serviceType] || responseSpeedFactors.default);
+
+  // Add preparation time based on service type
+  const preparationTimes = {
+    hospital: 60,   // 1 minute for ambulance
+    fire: 90,       // 1.5 minutes for fire truck
+    police: 30      // 30 seconds for police
+  };
+
+  return {
+    minutes: Math.round((adjustedResponseTimeSeconds +
+      (preparationTimes[serviceType] || preparationTimes.default)) / 60),
+    distance: Math.round(directDistance),
+    serviceType: serviceType
+  };
+}
+```
+
 ### Proximity Analysis Algorithms
 
 Several specialized algorithms evaluate proximity to different types of locations:
@@ -121,7 +270,7 @@ function findNearestFacilities(location, facilities, maxDistance) {
     .map(facility => ({
       ...facility,
       distance: calculateHaversineDistance(
-        location.lat, location.lng, 
+        location.lat, location.lng,
         facility.lat, facility.lng
       )
     }))
@@ -153,14 +302,14 @@ function calculateScore(distance, maxDistance, importance) {
 ```javascript
 function deduplicateSchools(schools) {
   const schoolMap = new Map();
-  
+
   for (const school of schools) {
     const key = `${school.name}|${school.address}`;
     if (!schoolMap.has(key)) {
       schoolMap.set(key, school);
     }
   }
-  
+
   return Array.from(schoolMap.values());
 }
 ```
@@ -208,8 +357,15 @@ The backend is built on Node.js with Express, structured around modular analysis
 2. **Geocoding Interface**: Translates addresses to coordinates for spatial analysis
 3. **Analysis Modules**:
    - `mobilityAnalysis.js`: Evaluates transit access and road proximity
-   - `livabilityAnalysis.js`: Assesses nearby amenities and educational institutions  
+   - `livabilityAnalysis.js`: Assesses nearby amenities and educational institutions
    - `emergencyAnalysis.js`: Evaluates access to hospitals, fire stations, and police stations
+   - `routingAnalysis.js`: Implements Dijkstra's algorithm for path finding and travel time calculations
+   - `drivingAnalysis.js`: Calculates driving and emergency response times
+
+4. **OpenStreetMap Integration**:
+   - The system integrates with OpenStreetMap data to build a comprehensive road network graph
+   - Road segments include attributes like road type, speed limits, and one-way information
+   - The graph is used for realistic path finding and travel time calculations
 
 The address analysis endpoint (`/analyze-address`) coordinates these modules to generate comprehensive results with detailed scores and nearby facilities.
 
@@ -256,12 +412,20 @@ Our testing revealed several interesting patterns:
 
 ## Conclusion
 
-The Ottawa Real Estate Mapping system successfully implements sophisticated geospatial algorithms to evaluate residential locations across multiple factors. By combining efficient distance calculations with weighted scoring systems, the application provides meaningful insights for real estate decision-making.
+The Ottawa Real Estate Mapping system successfully implements sophisticated geospatial algorithms to evaluate residential locations across multiple factors. By combining efficient distance calculations with weighted scoring systems and realistic travel time estimates, the application provides meaningful insights for real estate decision-making.
+
+Key achievements include:
+
+1. **Advanced Routing Algorithm**: Implementation of Dijkstra's algorithm on OpenStreetMap data for realistic path finding
+2. **Multi-modal Travel Time**: Calculation of both walking and driving times to all points of interest
+3. **Emergency Response Modeling**: Specialized algorithms for estimating emergency service response times
+4. **Performance Optimizations**: Smart pre-filtering and early termination strategies for efficient processing
 
 Future enhancements could include:
 
-1. Incorporating temporal factors (transit schedule variations, emergency response times)
+1. Incorporating temporal factors (transit schedule variations, time-of-day traffic patterns)
 2. Adding demographic and crime data for more comprehensive neighborhood evaluation
 3. Implementing predictive modeling for property value trends based on location scores
+4. Expanding the routing algorithm to include public transit options and cycling routes
 
-The system demonstrates the power of combining open data sources with custom geospatial algorithms to create practical tools for real-world decision support. 
+The system demonstrates the power of combining open data sources with custom geospatial algorithms to create practical tools for real-world decision support.

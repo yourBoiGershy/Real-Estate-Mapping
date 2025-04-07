@@ -22,9 +22,13 @@
     "csv-parser": "^3.2.0",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
-    "geolib": "^3.3.4"
+    "geolib": "^3.3.4",
+    "osm-pbf-parser": "^2.3.0",
+    "osm-read": "^0.7.0",
+    "pbf2json": "^6.4.0",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
   }
-} 
+}

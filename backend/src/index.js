@@ -4,7 +4,7 @@ import cors from 'cors';
 import { loadDataSources } from './data/dataLoader.js';
 import { getRealEstateHotspots } from './analysis/hotspotAnalysis.js';
 import { getLivabilityScore } from './analysis/livabilityAnalysis.js';
-import { calculateMobilityScore } from './analysis/mobilityAnalysis.js';
+import { calculateMobilityScore, initializeMobilityAnalysis } from './analysis/mobilityAnalysis.js';
 import axios from 'axios';
 import { calculateEmergencyServicesScore } from './analysis/emergencyAnalysis.js';
 import { calculateHaversineDistance } from './analysis/customGeoAnalysis.js';
@@ -53,30 +53,30 @@ const geocodeAddress = async (address, city = 'Ottawa', province = 'ON', country
   try {
     // Format the query
     const query = encodeURIComponent(`${address}, ${city}, ${province}, ${country}`);
-    
+
     // Use OpenStreetMap Nominatim API (free and doesn't require API key)
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=1`,
       { headers: { 'User-Agent': 'Real-Estate-Mapping/1.0' } }
     );
-    
+
     if (response.data && response.data.length > 0) {
       const result = response.data[0];
-      
+
       // Verify the address is in Ottawa
-      const isInOttawa = 
-        (result.address?.city?.toLowerCase() === 'ottawa') || 
+      const isInOttawa =
+        (result.address?.city?.toLowerCase() === 'ottawa') ||
         (result.address?.town?.toLowerCase() === 'ottawa') ||
         (result.address?.county?.toLowerCase().includes('ottawa')) ||
-        (result.address?.state?.toLowerCase() === 'ontario' && 
+        (result.address?.state?.toLowerCase() === 'ontario' &&
          (result.display_name?.toLowerCase().includes('ottawa') ||
-          parseFloat(result.lat) > 45.0 && parseFloat(result.lat) < 45.6 && 
+          parseFloat(result.lat) > 45.0 && parseFloat(result.lat) < 45.6 &&
           parseFloat(result.lon) > -76.0 && parseFloat(result.lon) < -75.3));
-      
+
       if (!isInOttawa) {
         throw new Error('Address is not located in Ottawa');
       }
-      
+
       return {
         lat: parseFloat(result.lat),
         lng: parseFloat(result.lon),
@@ -100,7 +100,7 @@ const calculateOverallScore = (mobility, livability, emergency) => {
     livability: 0.40,
     emergency: 0.25
   };
-  
+
   return Math.round(
     mobility * weights.mobility +
     livability * weights.livability +
@@ -124,17 +124,17 @@ app.get('/api/hotspots', (req, res) => {
 app.get('/api/livability', async (req, res) => {
   try {
     const { lat, lng, radius = 3000 } = req.query;
-    
+
     if (!lat || !lng) {
       return res.status(400).json({ error: 'Latitude and longitude are required' });
     }
-    
+
     const result = await getLivabilityScore({
       lat: parseFloat(lat),
       lng: parseFloat(lng),
       radius: parseInt(radius)
     });
-    
+
     res.json(result);
   } catch (error) {
     console.error('Error getting livability score:', error);
@@ -146,16 +146,16 @@ app.get('/api/livability', async (req, res) => {
 app.get('/api/mobility', async (req, res) => {
   try {
     const { lat, lng } = req.query;
-    
+
     if (!lat || !lng) {
       return res.status(400).json({ error: 'Latitude and longitude are required' });
     }
-    
+
     const result = calculateMobilityScore({
       lat: parseFloat(lat),
       lng: parseFloat(lng)
     });
-    
+
     res.json(result);
   } catch (error) {
     console.error('Error getting mobility score:', error);
@@ -195,12 +195,12 @@ app.get('/api/analyze-address', async (req, res) => {
 
     // Check if the address is in Ottawa (approximately)
     const ottawaCenter = { lat: 45.4215, lng: -75.6972 };
-    const distanceToOttawaCenter = 
+    const distanceToOttawaCenter =
       calculateHaversineDistance(
         { lat, lng },
         ottawaCenter
       );
-    
+
     if (distanceToOttawaCenter > 30000) { // 30km radius from Ottawa center
       return res.status(400).json({ error: 'Address is outside Ottawa region' });
     }
@@ -211,13 +211,24 @@ app.get('/api/analyze-address', async (req, res) => {
       lat: lat,
       lng: lng
     });
-    
+
+    // Log mobility score details including walking times
+    if (mobilityScore.details?.station?.walkingTime) {
+      console.log(`Walking time to nearest station: ${mobilityScore.details.station.walkingTime.minutes} minutes`);
+    }
+    if (mobilityScore.details?.busStop?.walkingTime) {
+      console.log(`Walking time to nearest bus stop: ${mobilityScore.details.busStop.walkingTime.minutes} minutes`);
+    }
+    if (mobilityScore.details?.road?.walkingTime) {
+      console.log(`Walking time to nearest road: ${mobilityScore.details.road.walkingTime.minutes} minutes`);
+    }
+
     console.log('Calculating livability score...');
     const livabilityResults = getLivabilityScore({
       lat: lat,
       lng: lng
     });
-    
+
     console.log('Calculating emergency services score...');
     const emergencyServicesResults = calculateEmergencyServicesScore({
       lat: lat,
@@ -253,7 +264,44 @@ app.get('/api/analyze-address', async (req, res) => {
         livability: {
           score: livabilityResults?.score || 0,
           categoryScores: livabilityResults?.categoryScores || {},
-          places: livabilityResults?.places || {}
+          places: livabilityResults?.places ? Object.fromEntries(
+            Object.entries(livabilityResults.places).map(([category, places]) => [
+              category,
+              places.map(place => ({
+                ...place,
+                walkingTime: place.walkingTime ? {
+                  minutes: place.walkingTime.minutes,
+                  isEstimate: place.walkingTime.isEstimate,
+                  method: place.walkingTime.method
+                } : null,
+                drivingTime: place.drivingTime ? {
+                  minutes: place.drivingTime.minutes,
+                  isEstimate: place.drivingTime.isEstimate,
+                  method: place.drivingTime.method,
+                  trafficLevel: place.drivingTime.trafficLevel
+                } : null
+              }))
+            ])
+          ) : {},
+          closestPlaces: livabilityResults?.closestPlaces ? Object.fromEntries(
+            Object.entries(livabilityResults.closestPlaces).map(([category, place]) => [
+              category,
+              {
+                ...place,
+                walkingTime: place.walkingTime ? {
+                  minutes: place.walkingTime.minutes,
+                  isEstimate: place.walkingTime.isEstimate,
+                  method: place.walkingTime.method
+                } : null,
+                drivingTime: place.drivingTime ? {
+                  minutes: place.drivingTime.minutes,
+                  isEstimate: place.drivingTime.isEstimate,
+                  method: place.drivingTime.method,
+                  trafficLevel: place.drivingTime.trafficLevel
+                } : null
+              }
+            ])
+          ) : {}
         },
         emergencyServices: {
           score: emergencyServicesResults?.score || 0,
@@ -266,7 +314,11 @@ app.get('/api/analyze-address', async (req, res) => {
                   lat: parseFloat(service.lat) || 0,
                   lng: parseFloat(service.lng) || 0,
                   distance: service.distance || 0,
-                  rating: parseFloat(service.rating) || 0
+                  rating: parseFloat(service.rating) || 0,
+                  responseTime: service.responseTime ? {
+                    minutes: service.responseTime.minutes,
+                    serviceType: service.responseTime.serviceType
+                  } : null
                 }))
               : [],
             nearest: emergencyServicesResults?.nearestHospital || null
@@ -280,7 +332,11 @@ app.get('/api/analyze-address', async (req, res) => {
                   lat: parseFloat(service.lat) || 0,
                   lng: parseFloat(service.lng) || 0,
                   distance: service.distance || 0,
-                  rating: parseFloat(service.rating) || 0
+                  rating: parseFloat(service.rating) || 0,
+                  responseTime: service.responseTime ? {
+                    minutes: service.responseTime.minutes,
+                    serviceType: service.responseTime.serviceType
+                  } : null
                 }))
               : [],
             nearest: emergencyServicesResults?.nearestFireStation || null
@@ -294,11 +350,35 @@ app.get('/api/analyze-address', async (req, res) => {
                   lat: parseFloat(service.lat) || 0,
                   lng: parseFloat(service.lng) || 0,
                   distance: service.distance || 0,
-                  rating: parseFloat(service.rating) || 0
+                  rating: parseFloat(service.rating) || 0,
+                  responseTime: service.responseTime ? {
+                    minutes: service.responseTime.minutes,
+                    serviceType: service.responseTime.serviceType
+                  } : null
                 }))
               : [],
             nearest: emergencyServicesResults?.nearestPoliceStation || null
-          }
+          },
+          closestServices: emergencyServicesResults?.closestServices ? Object.fromEntries(
+            Object.entries(emergencyServicesResults.closestServices).map(([type, service]) => [
+              type,
+              {
+                name: service.name || 'Unknown Service',
+                address: service.address || 'Address not available',
+                distance: service.distance || 0,
+                responseTime: service.responseTime ? {
+                  minutes: service.responseTime.minutes,
+                  serviceType: service.responseTime.serviceType
+                } : null,
+                drivingTime: service.drivingTime ? {
+                  minutes: service.drivingTime.minutes,
+                  isEstimate: service.drivingTime.isEstimate,
+                  method: service.drivingTime.method,
+                  trafficLevel: service.drivingTime.trafficLevel
+                } : null
+              }
+            ])
+          ) : {}
         },
         overallScore
       }
@@ -312,11 +392,11 @@ app.get('/api/analyze-address', async (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
-    // Load data sources
-    loadDataSources().then(data => {
-        dataSources = data;
+    try {
+        // Load data sources
+        dataSources = await loadDataSources();
         console.log(`Loaded ${dataSources.groceryStores?.length || 0} grocery stores`);
         console.log(`Loaded ${dataSources.emergencyServices?.length || 0} emergency services`);
         console.log(`Loaded ${dataSources.mainRoads?.length || 0} main roads`);
@@ -324,7 +404,11 @@ app.listen(PORT, () => {
         console.log(`Loaded ${dataSources.education?.length || 0} educational institutions`);
         console.log(`Loaded ${dataSources.parks?.length || 0} parks`);
         console.log('Data sources loaded successfully');
-    }).catch(err => {
-        console.error('Error loading data sources:', err);
-    });
+
+        // Initialize the road network graph for mobility analysis
+        await initializeMobilityAnalysis();
+        console.log('Server initialization complete, ready to handle requests');
+    } catch (err) {
+        console.error('Error during server initialization:', err);
+    }
 });

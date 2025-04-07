@@ -1,5 +1,6 @@
 import { calculateHaversineDistance } from './customGeoAnalysis.js';
 import { getMainRoads } from '../data/dataLoader.js';
+import { calculateWalkingTime, initializeRoadGraph } from './routingAnalysis.js';
 
 // Transit station data
 const TRANSIT_STATIONS = [
@@ -80,63 +81,79 @@ const BUS_STOPS = [
 ];
 
 /**
- * Calculate distance to the nearest transit station
+ * Calculate distance and walking time to the nearest transit station
  * @param {Object} location - Location with lat and lng
- * @returns {Object} - Distance and nearest station info
+ * @returns {Object} - Distance, walking time, and nearest station info
  */
 const calculateDistanceToNearestStation = (location) => {
   if (!TRANSIT_STATIONS || TRANSIT_STATIONS.length === 0) {
-    return { distance: Infinity, station: null };
+    return { distance: Infinity, walkingTime: null, station: null };
   }
-  
+
   let nearestStation = null;
   let minDistance = Infinity;
-  
+  let walkingTimeInfo = null;
+
   for (const station of TRANSIT_STATIONS) {
     const distance = calculateHaversineDistance(
       { lat: location.lat, lng: location.lng },
       { lat: station.lat, lng: station.lng }
     );
-    
+
     if (distance < minDistance) {
       minDistance = distance;
       nearestStation = station;
+
+      // Calculate walking time to this station
+      walkingTimeInfo = calculateWalkingTime(
+        { lat: location.lat, lng: location.lng },
+        { lat: station.lat, lng: station.lng }
+      );
     }
   }
-  
+
   return {
     distance: minDistance,
+    walkingTime: walkingTimeInfo,
     station: nearestStation
   };
 };
 
 /**
- * Calculate distance to the nearest bus stop
+ * Calculate distance and walking time to the nearest bus stop
  * @param {Object} location - Location with lat and lng
- * @returns {Object} - Distance and nearest bus stop info
+ * @returns {Object} - Distance, walking time, and nearest bus stop info
  */
 const calculateDistanceToNearestBusStop = (location) => {
   if (!BUS_STOPS || BUS_STOPS.length === 0) {
-    return { distance: Infinity, busStop: null };
+    return { distance: Infinity, walkingTime: null, busStop: null };
   }
-  
+
   let nearestBusStop = null;
   let minDistance = Infinity;
-  
+  let walkingTimeInfo = null;
+
   for (const busStop of BUS_STOPS) {
     const distance = calculateHaversineDistance(
       { lat: location.lat, lng: location.lng },
       { lat: busStop.lat, lng: busStop.lng }
     );
-    
+
     if (distance < minDistance) {
       minDistance = distance;
       nearestBusStop = busStop;
+
+      // Calculate walking time to this bus stop
+      walkingTimeInfo = calculateWalkingTime(
+        { lat: location.lat, lng: location.lng },
+        { lat: busStop.lat, lng: busStop.lng }
+      );
     }
   }
-  
+
   return {
     distance: minDistance,
+    walkingTime: walkingTimeInfo,
     busStop: nearestBusStop
   };
 };
@@ -148,33 +165,67 @@ const calculateDistanceToNearestBusStop = (location) => {
  */
 const calculateDistanceToNearestRoad = (location) => {
   const mainRoads = getMainRoads();
-  
+
   if (!mainRoads || mainRoads.length === 0) {
     return { distance: Infinity, road: null };
   }
-  
+
   let nearestRoad = null;
   let minDistance = Infinity;
-  
+  let nearestPoint = null;
+
   for (const road of mainRoads) {
     // Calculate distance to line segment
     const startPoint = { lat: parseFloat(road.start_lat), lng: parseFloat(road.start_lng) };
     const endPoint = { lat: parseFloat(road.end_lat), lng: parseFloat(road.end_lng) };
-    
+
     const distance = calculateDistanceToLineSegment(
       { lat: location.lat, lng: location.lng },
       startPoint,
       endPoint
     );
-    
+
     if (distance < minDistance) {
       minDistance = distance;
       nearestRoad = road;
+
+      // Find the nearest point on the road segment
+      // This is a simplified calculation to find the projection point
+      const x = location.lat;
+      const y = location.lng;
+      const x1 = startPoint.lat;
+      const y1 = startPoint.lng;
+      const x2 = endPoint.lat;
+      const y2 = endPoint.lng;
+
+      // Calculate squared length of line segment
+      const lengthSquared = Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2);
+
+      // If line segment is actually a point, use that point
+      if (lengthSquared === 0) {
+        nearestPoint = startPoint;
+      } else {
+        // Calculate projection of point onto line segment
+        const t = Math.max(0, Math.min(1, ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / lengthSquared));
+
+        // Calculate closest point on line segment
+        nearestPoint = {
+          lat: x1 + t * (x2 - x1),
+          lng: y1 + t * (y2 - y1)
+        };
+      }
     }
   }
-  
+
+  // Calculate walking time to the nearest point on the road
+  const walkingTimeInfo = nearestPoint ? calculateWalkingTime(
+    { lat: location.lat, lng: location.lng },
+    nearestPoint
+  ) : null;
+
   return {
     distance: minDistance,
+    walkingTime: walkingTimeInfo,
     road: nearestRoad
   };
 };
@@ -190,7 +241,7 @@ const calculateDistanceToLineSegment = (point, start, end) => {
   // Convert to Cartesian coordinates for simplicity
   // This is a simplification and works best for small distances
   const earthRadiusM = 6371000;
-  
+
   // Convert lat/lng to radians
   const startLat = start.lat * Math.PI / 180;
   const startLng = start.lng * Math.PI / 180;
@@ -198,53 +249,62 @@ const calculateDistanceToLineSegment = (point, start, end) => {
   const endLng = end.lng * Math.PI / 180;
   const pointLat = point.lat * Math.PI / 180;
   const pointLng = point.lng * Math.PI / 180;
-  
+
   // Convert to x, y coordinates (simplified for small distances)
   const x1 = earthRadiusM * Math.cos(startLat) * Math.cos(startLng);
   const y1 = earthRadiusM * Math.cos(startLat) * Math.sin(startLng);
   const z1 = earthRadiusM * Math.sin(startLat);
-  
+
   const x2 = earthRadiusM * Math.cos(endLat) * Math.cos(endLng);
   const y2 = earthRadiusM * Math.cos(endLat) * Math.sin(endLng);
   const z2 = earthRadiusM * Math.sin(endLat);
-  
+
   const x0 = earthRadiusM * Math.cos(pointLat) * Math.cos(pointLng);
   const y0 = earthRadiusM * Math.cos(pointLat) * Math.sin(pointLng);
   const z0 = earthRadiusM * Math.sin(pointLat);
-  
+
   // Line segment vector
   const dx = x2 - x1;
   const dy = y2 - y1;
   const dz = z2 - z1;
-  
+
   // Length squared of line segment
   const lengthSquared = dx * dx + dy * dy + dz * dz;
-  
+
   if (lengthSquared === 0) {
     // Start and end points are the same
     return Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1) + (z0 - z1) * (z0 - z1));
   }
-  
+
   // Calculate projection
   const t = ((x0 - x1) * dx + (y0 - y1) * dy + (z0 - z1) * dz) / lengthSquared;
-  
+
   if (t < 0) {
     // Beyond the start point
     return Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1) + (z0 - z1) * (z0 - z1));
   }
-  
+
   if (t > 1) {
     // Beyond the end point
     return Math.sqrt((x0 - x2) * (x0 - x2) + (y0 - y2) * (y0 - y2) + (z0 - z2) * (z0 - z2));
   }
-  
+
   // Projection point on line
   const projX = x1 + t * dx;
   const projY = y1 + t * dy;
   const projZ = z1 + t * dz;
-  
+
   // Distance from point to projection
   return Math.sqrt((x0 - projX) * (x0 - projX) + (y0 - projY) * (y0 - projY) + (z0 - projZ) * (z0 - projZ));
+};
+
+/**
+ * Initialize the road network graph
+ * This should be called when the application starts
+ */
+export const initializeMobilityAnalysis = () => {
+  console.log('Initializing mobility analysis and road network graph...');
+  initializeRoadGraph();
 };
 
 /**
@@ -253,13 +313,13 @@ const calculateDistanceToLineSegment = (point, start, end) => {
  * @returns {Object} - Mobility scores and details
  */
 export const calculateMobilityScore = (location) => {
-  // Calculate distances
+  // Calculate distances and walking times
   const stationInfo = calculateDistanceToNearestStation(location);
   const busStopInfo = calculateDistanceToNearestBusStop(location);
   const roadInfo = calculateDistanceToNearestRoad(location);
-  
+
   // Calculate individual scores
-  
+
   // Transit station score (max 100 if within 300m, 0 if beyond 3km)
   let stationScore = 0;
   if (stationInfo.distance <= 300) {
@@ -269,7 +329,7 @@ export const calculateMobilityScore = (location) => {
   } else {
     stationScore = Math.round(100 - ((stationInfo.distance - 300) / 2700) * 100);
   }
-  
+
   // Bus stop score (max 100 if within 150m, 0 if beyond 1km)
   let busStopScore = 0;
   if (busStopInfo.distance <= 150) {
@@ -279,7 +339,7 @@ export const calculateMobilityScore = (location) => {
   } else {
     busStopScore = Math.round(100 - ((busStopInfo.distance - 150) / 850) * 100);
   }
-  
+
   // Main road score (max 100 if within 200m, 0 if beyond 2km)
   let roadScore = 0;
   if (roadInfo.distance <= 200) {
@@ -289,7 +349,7 @@ export const calculateMobilityScore = (location) => {
   } else {
     roadScore = Math.round(100 - ((roadInfo.distance - 200) / 1800) * 100);
   }
-  
+
   // Calculate weighted overall mobility score
   // Weights can be adjusted based on importance of each factor
   const weights = {
@@ -297,19 +357,23 @@ export const calculateMobilityScore = (location) => {
     busStop: 0.3,   // Regular bus stops
     road: 0.2       // Road access
   };
-  
+
   const overallScore = Math.round(
     stationScore * weights.station +
     busStopScore * weights.busStop +
     roadScore * weights.road
   );
-  
+
   return {
     overallScore,
     details: {
       station: {
         score: stationScore,
         distance: Math.round(stationInfo.distance),
+        walkingTime: stationInfo.walkingTime ? {
+          minutes: stationInfo.walkingTime.minutes,
+          isEstimate: stationInfo.walkingTime.isEstimate
+        } : null,
         nearest: stationInfo.station ? {
           name: stationInfo.station.name,
           id: stationInfo.station.id
@@ -318,6 +382,10 @@ export const calculateMobilityScore = (location) => {
       busStop: {
         score: busStopScore,
         distance: Math.round(busStopInfo.distance),
+        walkingTime: busStopInfo.walkingTime ? {
+          minutes: busStopInfo.walkingTime.minutes,
+          isEstimate: busStopInfo.walkingTime.isEstimate
+        } : null,
         nearest: busStopInfo.busStop ? {
           id: busStopInfo.busStop.id,
           routes: busStopInfo.busStop.routes
@@ -326,10 +394,14 @@ export const calculateMobilityScore = (location) => {
       road: {
         score: roadScore,
         distance: Math.round(roadInfo.distance),
+        walkingTime: roadInfo.walkingTime ? {
+          minutes: roadInfo.walkingTime.minutes,
+          isEstimate: roadInfo.walkingTime.isEstimate
+        } : null,
         nearest: roadInfo.road ? {
           name: roadInfo.road.name
         } : null
       }
     }
   };
-}; 
+};

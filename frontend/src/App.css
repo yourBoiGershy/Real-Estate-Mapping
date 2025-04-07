@@ -124,6 +124,16 @@ body {
   padding-left: 20px;
 }
 
+.score-details .walking-time {
+  color: #2980b9;
+  font-weight: 500;
+}
+
+.score-details .driving-time {
+  color: #27ae60;
+  font-weight: 500;
+}
+
 .score-good {
   background-color: #4CAF50;
 }
@@ -156,4 +166,4 @@ body {
   background-color: #ffebee;
   border-radius: 4px;
   margin-bottom: 10px;
-} 
+}

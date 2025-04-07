@@ -149,6 +149,48 @@
   color: #6c757d;
 }
 
+.walking-time {
+  color: #2980b9;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.driving-time {
+  color: #27ae60;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.response-time {
+  color: #e74c3c;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.sub-score .walking-time,
+.sub-score .driving-time,
+.sub-score .response-time {
+  display: block;
+  margin-left: 0;
+  padding-left: 10px;
+  margin-top: 8px;
+}
+
+.sub-score .walking-time {
+  border-left: 2px solid #3498db;
+}
+
+.sub-score .driving-time {
+  border-left: 2px solid #27ae60;
+}
+
+.sub-score .response-time {
+  border-left: 2px solid #e74c3c;
+}
+
 .category-details {
   margin-top: 8px;
   border: 1px solid #eee;
@@ -257,13 +299,13 @@
   .results-container {
     flex-direction: column;
   }
-  
+
   .scores-panel, .map-container {
     width: 100%;
   }
-  
+
   .map-container {
     margin-top: 20px;
     height: 400px;
   }
-} 
+}
